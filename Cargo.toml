@@ -1,0 +1,19 @@
+[package]
+name = "midend"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["MrPicklePinosaur", "nithinmuthukumar"]
+description = ""
+repository = "https://github.com/IgnitionHacks2022/midend"
+
+[features]
+
+[dependencies]
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+rscam = "0.5"
+gpio = "0.4"
+
+anyhow = "1"
+thiserror = "1"
+pino_utils = { git = "https://github.com/MrPicklePinosaur/pino_utils" }
