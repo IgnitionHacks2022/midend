@@ -1,7 +1,9 @@
-use bluer::{Adapter, AdapterEvent, Address, DeviceEvent};
+use bluer::{Adapter, AdapterEvent, Address, Device, DeviceEvent};
 use futures::{pin_mut, stream::SelectAll, StreamExt};
 use anyhow::Result;
 use std::{collections::HashSet, env};
+use std::thread;
+use std::time::Duration;
 
 async fn query_device(adapter: &Adapter, addr: Address) -> Result<()> {
     let device = adapter.device(addr)?;
@@ -22,53 +24,47 @@ async fn query_device(adapter: &Adapter, addr: Address) -> Result<()> {
 }
 
 
-pub async fn rssi_by_inquiry() -> Result<()> {
+pub async fn rssi_by_inquiry() -> Result<String>{
 
-    println!("hello");
     let session = bluer::Session::new().await?;
     let adapter = session.default_adapter().await?;
     println!("Discovering devices using Bluetooth adapater {}\n", adapter.name());
-    adapter.set_powered(true).await?;
+    adapter.set_powered(true).await.unwrap();
     println!("powered on");
 
     let device_events = adapter.discover_devices().await?;
-    pin_mut!(device_events);
     
 
-    let mut all_change_events = SelectAll::new();
 
-    loop {
-        tokio::select! {
-            Some(device_event) = device_events.next() => {
-                match device_event {
-                    AdapterEvent::DeviceAdded(addr) => {
+    println!("Scanning for bluetooth addresses");
+    thread::sleep(Duration::from_secs(10));
 
-                        println!("Device added: {}", addr);
-                        let res = query_device(&adapter, addr).await;
-                        if let Err(err) = res {
-                            println!("    Error: {}", &err);
-                        }
+    let mut addrs = adapter.device_addresses().await.unwrap();
+    let mut named_addrs: Vec<(String,i16)> = Vec::new();
 
-                        let device = adapter.device(addr)?;
-                        let change_events = device.events().await?.map(move |evt| (addr, evt));
-                        all_change_events.push(change_events);
-                    }
-                    AdapterEvent::DeviceRemoved(addr) => {
-                        println!("Device removed: {}", addr);
-                    }
-                    _ => (),
-                }
-                println!();
+
+    for addr in addrs.iter(){
+        let device = adapter.device(addr.clone())?;
+        match device.name().await?{
+            Some(x) => {
+                println!("{}",x.clone());
+                println!("{}",device.rssi().await?.unwrap());
+                named_addrs.push((x,device.rssi().await?.unwrap()));
+                
+
+
             }
-            Some((addr, DeviceEvent::PropertyChanged(property))) = all_change_events.next() => {
-
-                println!("Device changed: {}", addr);
-                println!("    {:?}", property);
-            }
-            else => break
+            None =>()
         }
     }
+    named_addrs.sort_by(|(n1,r1),(n2,r2)|r2.cmp(r1));
 
-    Ok(())
+
+
+    return Ok(named_addrs[0].0.clone());
+
+
+
+    
 }
 

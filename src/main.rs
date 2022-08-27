@@ -13,8 +13,5 @@ use bluetooth::rssi_by_inquiry;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main(){
-    // take_picture("/dev/video2");
-    // gpio_test().unwrap();
-    println!("hello");
-    rssi_by_inquiry().await;
+
 }
