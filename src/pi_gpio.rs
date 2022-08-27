@@ -5,46 +5,26 @@ use pino_utils::ok_or_continue;
 use sysfs_gpio::{Direction, Pin};
 
 pub fn gpio_test() -> Result<()> {
-    let my_led = Pin::new(16);
-    my_led.with_exported(|| {
-        loop {
-            my_led.set_value(0)?;
-            thread::sleep(Duration::from_millis(1000));
-            my_led.set_value(1)?;
-            thread::sleep(Duration::from_millis(1000));
-        }
-        Ok(())
-    });
-    Ok(())
-    /*
-    let mut gpio23 = Pin::new(23);
-    let mut gpio24 = Pin::new(24);
-
-    // print value of gpio 23
-    /*
+    let gpio23 = Pin::new(23);
+    let gpio24 = Pin::new(24);
+    gpio23.set_direction(Direction::Out)?;
+    gpio24.set_direction(Direction::Out)?;
     loop {
-        let gpio23_val = ok_or_continue!(gpio23.read_value());
-        println!("GPIO23: {:?}", gpio23_val);
+        println!("zeroing");
+        gpio23.set_value(1)?;
+        gpio24.set_value(1)?;
+        thread::sleep(Duration::from_millis(200));
+        println!("enabling gpio23");
+        gpio23.set_value(1)?;
+        gpio24.set_value(0)?;
+        thread::sleep(Duration::from_millis(1000));
+        println!("zeroing");
+        gpio23.set_value(1)?;
+        gpio24.set_value(1)?;
+        thread::sleep(Duration::from_millis(200));
+        println!("enabling gpio24");
+        gpio23.set_value(0)?;
+        gpio24.set_value(1)?;
         thread::sleep(Duration::from_millis(1000));
     }
-    */
-    let mut gpio23_val = false;
-    loop {
-        if gpio23_val {
-            ok_or_continue!(gpio23.set_value(gpio23_val as u8));
-            ok_or_continue!(gpio24.set_value(!gpio23_val as u8));
-        } else {
-            ok_or_continue!(gpio23.set_value(!gpio23_val as u8));
-            ok_or_continue!(gpio24.set_value(gpio23_val as u8));
-        }
-
-        thread::sleep(Duration::from_millis(1000));
-        ok_or_continue!(gpio23.set_value(false as u8));
-        ok_or_continue!(gpio24.set_value(false as u8));
-        thread::sleep(Duration::from_millis(500));
-        gpio23_val = !gpio23_val;
-    }
-
-    Ok(())
-    */
 }
