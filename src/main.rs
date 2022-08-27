@@ -17,5 +17,5 @@ fn main() {
     // println!("{:?}", image);
     // classify("nithin", image).unwrap();
     // gpio_test().unwrap();
-    motion::opencv_test(2).unwrap();
+    // motion::opencv_test(2).unwrap();
 }

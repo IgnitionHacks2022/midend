@@ -2,10 +2,17 @@ use anyhow::{anyhow, Result};
 use image::RgbImage;
 use ndarray::{Array1, ArrayView1, ArrayView3};
 use opencv::{
-    core::{absdiff, Param_UNSIGNED_INT, Point, Size, Vector, BORDER_CONSTANT, BORDER_DEFAULT},
+    core::{
+        absdiff, Param_UNSIGNED_INT, Point, Rect, Scalar, Size, VecN, Vector, BORDER_CONSTANT,
+        BORDER_DEFAULT,
+    },
     highgui, imgcodecs,
-    imgproc::{self, morphology_default_border_value, THRESH_BINARY},
+    imgproc::{
+        self, bounding_rect, morphology_default_border_value, CHAIN_APPROX_SIMPLE, LINE_8,
+        RETR_EXTERNAL, THRESH_BINARY,
+    },
     prelude::*,
+    types::VectorOfMat,
     videoio,
     videoio::VideoCapture,
 };
@@ -64,8 +71,25 @@ pub fn opencv_test(device: i32) -> Result<()> {
         )?;
 
         // find contours
+        let mut contours = VectorOfMat::default();
+        imgproc::find_contours(
+            &thresh,
+            &mut contours,
+            RETR_EXTERNAL,
+            CHAIN_APPROX_SIMPLE,
+            Point { x: 0, y: 0 },
+        )?;
 
-        highgui::imshow("window", &dummy)?;
+        let mut boxed = frame;
+        for contour in contours.iter() {
+            if imgproc::contour_area(&contour, false)? < 5000. {
+                continue;
+            }
+            let rect = bounding_rect(&contour)?;
+            imgproc::rectangle(&mut boxed, rect, VecN([0., 255., 0., 1.]), 5, LINE_8, 0)?;
+        }
+
+        highgui::imshow("window", &boxed)?;
         // imgcodecs::imwrite("./frame.png", &diff, &Vector::default())?;
 
         if highgui::wait_key(1)? == 113 {
