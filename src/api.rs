@@ -1,6 +1,6 @@
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use reqwest::blocking::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 pub const API_URL: &str = "https://127.0.0.1:8080";
 
@@ -8,12 +8,12 @@ pub const API_URL: &str = "https://127.0.0.1:8080";
 pub enum Item {
     Paper,
     Plastic,
-    Garbage
+    Garbage,
 }
 #[derive(Deserialize)]
 pub struct ClassifyResponse {
     #[serde(rename = "type")]
-    item_type: Item
+    item_type: Item,
 }
 
 pub fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {

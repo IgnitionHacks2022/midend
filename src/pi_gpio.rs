@@ -1,6 +1,7 @@
-use anyhow::Result;
-use gpio::{GpioIn, GpioOut, sysfs::*};
 use std::{thread, time::Duration};
+
+use anyhow::Result;
+use gpio::{sysfs::*, GpioIn, GpioOut};
 use pino_utils::ok_or_continue;
 
 pub fn gpio_test() -> Result<()> {
@@ -23,4 +24,3 @@ pub fn gpio_test() -> Result<()> {
 
     Ok(())
 }
-
