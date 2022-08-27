@@ -17,3 +17,8 @@ Next install some git hooks:
 $ just devsetup
 ```
 
+Ensure that you have the `opencv` headers and `clang` installed on your system.
+To run
+```
+$ just
+```
