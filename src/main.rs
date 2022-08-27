@@ -40,6 +40,14 @@ async fn main() {
     let gpio_handle = thread::spawn(move || {
         for recv in gpio_rx {
             println!("motor for item {:?}", recv);
+
+            // convert item to a duration
+            let duration = match recv {
+                Item::Garbage => 3,
+                Item::Blue => 5,
+                Item::Red => 7,
+            };
+            pi_gpio::rotate(duration);
         }
     });
 
