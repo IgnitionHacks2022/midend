@@ -31,7 +31,7 @@ fn main() {
         for recv in motion_rx {
             println!("recieved {}", recv);
             let resp = ok_or_continue_msg!(api::classify("nithin", Vec::new()), |e| {
-                println!("{:?}", e);
+                // println!("{:?}", e);
             });
             if gpio_tx.send(resp.item_type).is_err() {
                 println!("Error sending to gpio thread");
