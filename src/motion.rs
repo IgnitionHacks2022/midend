@@ -22,7 +22,7 @@ use opencv::{
 const DELAY: u64 = 3000;
 
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
-pub fn opencv_test(tx: Sender<String>, device: i32) -> Result<()> {
+pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
     highgui::named_window("window", highgui::WINDOW_FULLSCREEN)?;
 
     let mut cam = VideoCapture::new(device, videoio::CAP_ANY)?;
@@ -63,15 +63,17 @@ pub fn opencv_test(tx: Sender<String>, device: i32) -> Result<()> {
         }
 
         // take picture if motion was detected
-        if contours.len() > 0 {
+        if !contours.is_empty() {
             if sent == false {
                 // delay before sending image
                 thread::sleep(Duration::from_millis(DELAY));
 
                 let motion_frame = capture_frame(&mut cam)?;
-                imgcodecs::imwrite("./frame.png", &motion_frame, &Vector::default())?;
+                let mut buf = Vector::default();
+                imgcodecs::imencode(".png", &motion_frame, &mut buf, &Vector::default())?;
+                let buf = buf.to_vec();
 
-                tx.send("Motion!".to_owned())?;
+                tx.send(buf)?;
                 sent = true;
             }
         } else {
