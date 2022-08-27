@@ -18,6 +18,10 @@ use pino_utils::ok_or_continue_msg;
 
 use crate::camera::take_picture;
 
+fn main() {
+    gpio_test().unwrap();
+}
+/*
 #[tokio::main]
 async fn main() {
     let (motion_tx, motion_rx) = mpsc::channel::<Vec<u8>>();
@@ -49,3 +53,4 @@ async fn main() {
 
     opencv_handle.join().unwrap();
 }
+*/

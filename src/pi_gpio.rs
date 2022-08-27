@@ -2,9 +2,21 @@ use std::{thread, time::Duration};
 
 use anyhow::Result;
 use pino_utils::ok_or_continue;
-use sysfs_gpio::Pin;
+use sysfs_gpio::{Direction, Pin};
 
 pub fn gpio_test() -> Result<()> {
+    let my_led = Pin::new(16);
+    my_led.with_exported(|| {
+        loop {
+            my_led.set_value(0)?;
+            thread::sleep(Duration::from_millis(1000));
+            my_led.set_value(1)?;
+            thread::sleep(Duration::from_millis(1000));
+        }
+        Ok(())
+    });
+    Ok(())
+    /*
     let mut gpio23 = Pin::new(23);
     let mut gpio24 = Pin::new(24);
 
@@ -34,4 +46,5 @@ pub fn gpio_test() -> Result<()> {
     }
 
     Ok(())
+    */
 }
