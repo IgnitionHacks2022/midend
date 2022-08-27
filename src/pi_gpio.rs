@@ -88,7 +88,6 @@ pub fn disable() -> Result<()> {
     let gpio24 = Pin::new(24);
     gpio23.set_direction(Direction::Out)?;
     gpio24.set_direction(Direction::Out)?;
-    println!("zeroing");
     gpio23.set_value(LOW)?;
     gpio24.set_value(LOW)?;
     Ok(())
