@@ -11,4 +11,4 @@ fmt:
     cargo +nightly fmt --all
 
 lint:
-    cargo clippy
+    cargo clippy -- -W clippy::unwrap_used -W clippy::cargo

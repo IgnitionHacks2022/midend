@@ -19,6 +19,7 @@ reqwest = { version = "0.11", features = ["blocking", "json"] }
 rscam = "0.5"
 sysfs_gpio = "0.6"
 opencv = { version = "0.66", default-features = false, features = ["highgui", "imgcodecs", "imgproc", "videoio"] }
+rodio = { version = "0.15", default-features = false, features = ["mp3"] }
 serde = { version = "1", features = ["derive"] }
 
 anyhow = "1"
