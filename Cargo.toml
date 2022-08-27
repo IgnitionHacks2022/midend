@@ -7,7 +7,13 @@ authors = ["MrPicklePinosaur", "nithinmuthukumar"]
 description = ""
 repository = "https://github.com/IgnitionHacks2022/midend"
 
-[features]
+[[bin]]
+name = "server"
+path = "src/bin/server/main.rs"
+
+[[bin]]
+name = "gpio-debug"
+path = "src/bin/gpio-debug/main.rs"
 
 [dependencies]
 futures = "0.3.19"

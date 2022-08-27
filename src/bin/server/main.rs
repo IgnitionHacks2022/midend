@@ -1,27 +1,13 @@
-#![allow(unused)]
-#![allow(dead_code)]
-
-mod api;
-mod audio;
-mod bluetooth;
-mod camera;
-mod models;
-mod motion;
-mod pi_gpio;
-
 use std::{
     sync::mpsc,
     thread::{self, JoinHandle},
 };
 
 use anyhow::Result;
-use audio::play_audio;
-use bluetooth::rssi_by_inquiry;
-use models::Item;
-use pi_gpio::gpio_test;
+use garbagio_midend::{
+    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion,
+};
 use pino_utils::ok_or_continue_msg;
-
-use crate::camera::take_picture;
 
 #[tokio::main]
 async fn main() {

@@ -1,8 +1,11 @@
 
-default: debug
+default: server
 
-debug:
-    cargo run
+server:
+    cargo run --bin server
+
+gpio-debug:
+    cargo run --bin gpio-debug
 
 devsetup:
     cp dev/hooks/* .git/hooks

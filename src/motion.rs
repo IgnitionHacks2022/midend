@@ -17,7 +17,7 @@ use opencv::{
     videoio::VideoCapture,
 };
 
-const DELAY: u64 = 3000;
+const DELAY: u64 = 2000;
 
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
 pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
@@ -54,7 +54,7 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
         // debug contour lines
         let mut boxed = original_frame;
         for contour in contours.iter() {
-            if imgproc::contour_area(&contour, false)? > 5000. {
+            if imgproc::contour_area(&contour, false)? > 8000. {
                 let rect = bounding_rect(&contour)?;
                 imgproc::rectangle(&mut boxed, rect, VecN([0., 255., 0., 1.]), 5, LINE_8, 0)?;
             }
