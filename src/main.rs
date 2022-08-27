@@ -12,15 +12,14 @@ use std::{sync::mpsc, thread};
 
 use anyhow::Result;
 use models::Item;
+use pi_gpio::gpio_test;
 use pino_utils::ok_or_continue_msg;
 
 use crate::camera::take_picture;
 
 fn main() {
-    // let image = take_picture("/dev/video2").unwrap();
-    // println!("{:?}", image);
-    // classify("nithin", image).unwrap();
-    // gpio_test().unwrap();
+    gpio_test().unwrap();
+    /*
     let (motion_tx, motion_rx) = mpsc::channel::<Vec<u8>>();
     let (gpio_tx, gpio_rx) = mpsc::channel::<Item>();
 
@@ -45,4 +44,5 @@ fn main() {
     });
 
     opencv_handle.join().unwrap();
+    */
 }
