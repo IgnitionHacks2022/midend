@@ -1,26 +1,30 @@
 use std::{thread, time::Duration};
 
 use anyhow::Result;
-use gpio::{sysfs::*, GpioIn, GpioOut};
 use pino_utils::ok_or_continue;
+use sysfs_gpio::{Direction, Pin};
 
 pub fn gpio_test() -> Result<()> {
-    let mut gpio23 = SysFsGpioOutput::open(23)?;
-
-    // print value of gpio 23
-    /*
+    let gpio23 = Pin::new(23);
+    let gpio24 = Pin::new(24);
+    gpio23.set_direction(Direction::Out)?;
+    gpio24.set_direction(Direction::Out)?;
     loop {
-        let gpio23_val = ok_or_continue!(gpio23.read_value());
-        println!("GPIO23: {:?}", gpio23_val);
-        thread::sleep(Duration::from_millis(1000));
+        println!("zeroing");
+        gpio23.set_value(1)?;
+        gpio24.set_value(1)?;
+        thread::sleep(Duration::from_millis(200));
+        println!("enabling gpio23");
+        gpio23.set_value(1)?;
+        gpio24.set_value(0)?;
+        thread::sleep(Duration::from_millis(5000));
+        println!("zeroing");
+        gpio23.set_value(1)?;
+        gpio24.set_value(1)?;
+        thread::sleep(Duration::from_millis(200));
+        println!("enabling gpio24");
+        gpio23.set_value(0)?;
+        gpio24.set_value(1)?;
+        thread::sleep(Duration::from_millis(5000));
     }
-    */
-    let mut gpio23_val = false;
-    loop {
-        ok_or_continue!(gpio23.set_value(gpio23_val));
-        thread::sleep(Duration::from_millis(1000));
-        gpio23_val = !gpio23_val;
-    }
-
-    Ok(())
 }

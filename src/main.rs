@@ -13,6 +13,7 @@ use std::{sync::mpsc, thread};
 use anyhow::Result;
 use bluetooth::rssi_by_inquiry;
 use models::Item;
+use pi_gpio::gpio_test;
 use pino_utils::ok_or_continue_msg;
 
 use crate::camera::take_picture;
