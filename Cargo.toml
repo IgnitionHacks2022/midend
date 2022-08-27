@@ -11,11 +11,11 @@ repository = "https://github.com/IgnitionHacks2022/midend"
 
 [dependencies]
 futures = "0.3.19"
-tokio = { version = "1" }
+tokio = { version = "1", features = ["rt-multi-thread"] }
 bluer = {version = "0.15.0", features = ["bluetoothd"]}
 rand = "0.8"
 
-reqwest = { version = "0.11", features = ["blocking", "json"] }
+reqwest = { version = "0.11", features = ["json"] }
 rscam = "0.5"
 sysfs_gpio = "0.6"
 opencv = { version = "0.66", default-features = false, features = ["highgui", "imgcodecs", "imgproc", "videoio"] }
