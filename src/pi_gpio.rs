@@ -14,8 +14,8 @@ pub fn rotate(steps: u64) -> Result<()> {
     gpio24.set_direction(Direction::Out)?;
 
     let motor_action = move |gpio23_val: u8, gpio24_val: u8, dur: u64| -> Result<()> {
-        gpio23.set_value(gpio23_val)?;
-        gpio24.set_value(gpio24_val)?;
+        gpio23.set_value(gpio23_val)?; // clockwise
+        gpio24.set_value(gpio24_val)?; // counterclockwise
         thread::sleep(Duration::from_millis(dur));
         Ok(())
     };

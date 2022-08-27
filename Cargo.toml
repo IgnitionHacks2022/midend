@@ -19,8 +19,10 @@ reqwest = { version = "0.11", features = ["json"] }
 rscam = "0.5"
 sysfs_gpio = "0.6"
 opencv = { version = "0.66", default-features = false, features = ["highgui", "imgcodecs", "imgproc", "videoio"] }
-rodio = { version = "0.15", default-features = false, features = ["mp3"] }
+rodio = { version = "0.15", default-features = false, features = ["mp3", "wav"] }
 serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+base64 = { version = "0.13" }
 
 anyhow = "1"
 thiserror = "1"

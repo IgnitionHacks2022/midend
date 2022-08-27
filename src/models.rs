@@ -21,8 +21,9 @@ impl TryFrom<String> for Item {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ClassifyResponse {
     #[serde(rename = "type")]
-    pub item_type: Item,
+    pub item_type: String,
+    pub audio: String,
 }
