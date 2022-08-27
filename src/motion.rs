@@ -1,3 +1,5 @@
+use std::sync::mpsc::Sender;
+
 use anyhow::{anyhow, Result};
 use image::RgbImage;
 use ndarray::{Array1, ArrayView1, ArrayView3};
@@ -18,13 +20,15 @@ use opencv::{
 };
 
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
-pub fn opencv_test(device: i32) -> Result<()> {
+pub fn opencv_test(tx: Sender<String>, device: i32) -> Result<()> {
     highgui::named_window("window", highgui::WINDOW_FULLSCREEN)?;
 
     let mut cam = VideoCapture::new(device, videoio::CAP_ANY)?;
     let mut static_frame = Mat::default();
 
-    for i in 0..200 {
+    let mut i = 0;
+    loop {
+        i += 1;
         let mut frame = Mat::default();
         cam.read(&mut frame)?;
 
@@ -85,6 +89,9 @@ pub fn opencv_test(device: i32) -> Result<()> {
             if imgproc::contour_area(&contour, false)? < 5000. {
                 continue;
             }
+            // motion detected, send message
+            tx.send("Motion!".to_owned())?;
+
             let rect = bounding_rect(&contour)?;
             imgproc::rectangle(&mut boxed, rect, VecN([0., 255., 0., 1.]), 5, LINE_8, 0)?;
         }
@@ -101,29 +108,4 @@ pub fn opencv_test(device: i32) -> Result<()> {
     highgui::destroy_all_windows()?;
 
     Ok(())
-}
-
-trait AsArray {
-    fn try_as_array(&self) -> Result<ArrayView3<u8>>;
-}
-impl AsArray for Mat {
-    fn try_as_array(&self) -> Result<ArrayView3<u8>> {
-        if !self.is_continuous() {
-            return Err(anyhow!("Mat is not continuous"));
-        }
-        let bytes = self.data_bytes()?;
-        // println!("databytes {:?}", bytes);
-        let size = self.size()?;
-        // println!("size {:?}", size);
-        let a = ArrayView3::from_shape((size.height as usize, size.width as usize, 3), bytes)?;
-        Ok(a)
-    }
-}
-
-fn array_to_image(arr: ArrayView3<u8>) -> RgbImage {
-    assert!(arr.is_standard_layout());
-    let (height, width, _) = arr.dim();
-    let raw = arr.to_slice().expect("Failed to extract slice from array");
-    RgbImage::from_raw(width as u32, height as u32, raw.to_vec())
-        .expect("container should have the right size for the image dimensions")
 }

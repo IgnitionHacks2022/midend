@@ -1,20 +1,9 @@
 use anyhow::{anyhow, Result};
 use reqwest::blocking::*;
-use serde::{Deserialize, Serialize};
+
+use crate::models::{ClassifyResponse, Item};
 
 pub const API_URL: &str = "https://127.0.0.1:8080";
-
-#[derive(Deserialize, Debug)]
-pub enum Item {
-    Paper,
-    Plastic,
-    Garbage,
-}
-#[derive(Deserialize)]
-pub struct ClassifyResponse {
-    #[serde(rename = "type")]
-    item_type: Item,
-}
 
 pub fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
     let resp = Client::new()
@@ -29,4 +18,10 @@ pub fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
 
     let resp_json = resp.json::<ClassifyResponse>()?;
     Ok(resp_json)
+}
+
+pub fn classify_dummy(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
+    Ok(ClassifyResponse {
+        item_type: Item::Paper,
+    })
 }
