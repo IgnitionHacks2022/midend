@@ -20,8 +20,6 @@ use crate::camera::take_picture;
 
 #[tokio::main]
 async fn main() {
-    gpio_test().unwrap();
-    /*
     let (motion_tx, motion_rx) = mpsc::channel::<Vec<u8>>();
     let (gpio_tx, gpio_rx) = mpsc::channel::<Item>();
 
@@ -50,5 +48,4 @@ async fn main() {
     }
 
     opencv_handle.join().unwrap();
-    */
 }
