@@ -1,22 +1,72 @@
 use anyhow::{anyhow, Result};
 use image::RgbImage;
 use ndarray::{Array1, ArrayView1, ArrayView3};
-use opencv::{core::Vector, highgui, imgcodecs, prelude::*, videoio, videoio::VideoCapture};
+use opencv::{
+    core::{absdiff, Param_UNSIGNED_INT, Point, Size, Vector, BORDER_CONSTANT, BORDER_DEFAULT},
+    highgui, imgcodecs,
+    imgproc::{self, morphology_default_border_value, THRESH_BINARY},
+    prelude::*,
+    videoio,
+    videoio::VideoCapture,
+};
 
+// translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
 pub fn opencv_test(device: i32) -> Result<()> {
     highgui::named_window("window", highgui::WINDOW_FULLSCREEN)?;
 
     let mut cam = VideoCapture::new(device, videoio::CAP_ANY)?;
+    let mut static_frame = Mat::default();
 
-    let mut frame = Mat::default();
-    for i in 0..1 {
+    for i in 0..200 {
+        let mut frame = Mat::default();
         cam.read(&mut frame)?;
-        highgui::imshow("window", &frame)?;
-        imgcodecs::imwrite("./frame.png", &frame, &Vector::default())?;
-        let a = frame.try_as_array()?;
-        let img = array_to_image(a);
-        img.save("./out.png")?;
-        // println!("frame {}", a);
+
+        // convert to grayscale
+        let mut gray = Mat::default();
+        imgproc::cvt_color(&frame, &mut gray, imgproc::COLOR_BGR2GRAY, 0)?;
+
+        // apply gaussian blur
+        let mut blur = Mat::default();
+        imgproc::gaussian_blur(
+            &gray,
+            &mut blur,
+            Size {
+                width: 21,
+                height: 21,
+            },
+            0.,
+            0.,
+            BORDER_DEFAULT,
+        )?;
+
+        // save first frame as reference
+        if i < 10 {
+            static_frame = blur;
+            continue;
+        }
+
+        // difference between reference frame
+        let mut diff = Mat::default();
+        absdiff(&static_frame, &blur, &mut diff)?;
+
+        // apply a threshold
+        let mut dummy = Mat::default();
+        let thresh_frame = imgproc::threshold(&diff, &mut dummy, 30., 255., THRESH_BINARY)?;
+        let mut thresh = Mat::default();
+        imgproc::dilate(
+            &dummy,
+            &mut thresh,
+            &Mat::default(),
+            Point { x: -1, y: -1 },
+            2,
+            BORDER_CONSTANT,
+            morphology_default_border_value()?,
+        )?;
+
+        // find contours
+
+        highgui::imshow("window", &dummy)?;
+        // imgcodecs::imwrite("./frame.png", &diff, &Vector::default())?;
 
         if highgui::wait_key(1)? == 113 {
             break;
