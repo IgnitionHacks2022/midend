@@ -12,7 +12,6 @@ repository = "https://github.com/IgnitionHacks2022/midend"
 [dependencies]
 futures = "0.3.19"
 tokio = { version = "1", features = ["full"] }
-serde = { version = "1", features = ["derive"] }
 remoc = "0.9"
 bluer = {version = "0.15.0", features = ["bluetoothd"]}
 clap = { version = "3", features = ["derive"] }
