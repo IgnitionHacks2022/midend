@@ -10,7 +10,9 @@ mod pi_gpio;
 
 use std::{sync::mpsc, thread};
 
+use anyhow::Result;
 use models::Item;
+use pino_utils::ok_or_continue_msg;
 
 use crate::camera::take_picture;
 
@@ -28,8 +30,12 @@ fn main() {
     let api_handle = thread::spawn(move || {
         for recv in motion_rx {
             println!("recieved {}", recv);
-            let resp = api::classify_dummy("nithin", Vec::new()).unwrap();
-            gpio_tx.send(resp.item_type).unwrap();
+            let resp = ok_or_continue_msg!(api::classify("nithin", Vec::new()), |e| {
+                println!("{:?}", e);
+            });
+            if gpio_tx.send(resp.item_type).is_err() {
+                println!("Error sending to gpio thread");
+            }
         }
     });
     let gpio_handle = thread::spawn(move || {

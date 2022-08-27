@@ -19,9 +19,3 @@ pub fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
     let resp_json = resp.json::<ClassifyResponse>()?;
     Ok(resp_json)
 }
-
-pub fn classify_dummy(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
-    Ok(ClassifyResponse {
-        item_type: Item::Paper,
-    })
-}
