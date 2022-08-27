@@ -20,8 +20,6 @@ rscam = "0.5"
 sysfs_gpio = "0.6"
 opencv = { version = "0.66", default-features = false, features = ["highgui", "imgcodecs", "imgproc", "videoio"] }
 serde = { version = "1", features = ["derive"] }
-ndarray = "0.15"
-image = "0.24"
 
 anyhow = "1"
 thiserror = "1"

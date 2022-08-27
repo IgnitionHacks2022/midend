@@ -17,7 +17,7 @@ pub fn gpio_test() -> Result<()> {
         println!("enabling gpio23");
         gpio23.set_value(1)?;
         gpio24.set_value(0)?;
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         println!("zeroing");
         gpio23.set_value(1)?;
         gpio24.set_value(1)?;
@@ -25,6 +25,6 @@ pub fn gpio_test() -> Result<()> {
         println!("enabling gpio24");
         gpio23.set_value(0)?;
         gpio24.set_value(1)?;
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
     }
 }

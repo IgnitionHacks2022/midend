@@ -1,8 +1,6 @@
 use std::{sync::mpsc::Sender, thread, time::Duration};
 
 use anyhow::{anyhow, Result};
-use image::RgbImage;
-use ndarray::{Array1, ArrayView1, ArrayView3};
 use opencv::{
     core::{
         absdiff, Param_UNSIGNED_INT, Point, Rect, Scalar, Size, VecN, Vector, BORDER_CONSTANT,
