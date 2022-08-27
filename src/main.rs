@@ -51,13 +51,13 @@ async fn main() {
         let device_name = ok_or_continue_msg!(rssi_by_inquiry().await, |e| {
             println!("{:?}", e);
         });
-        let resp = ok_or_continue_msg!(api::classify("nithin", recv), |e| {
-            // println!("{:?}", e);
+        */
+        let resp = ok_or_continue_msg!(api::classify("nithin", recv).await, |e| {
+            println!("{:?}", e);
         });
         if gpio_tx.send(resp.item_type).is_err() {
             println!("Error sending to gpio thread");
         }
-        */
         let audio_handle = thread::spawn(move || {
             if let Err(e) = play_audio() {
                 println!("Error playing audio {:?}", e);
