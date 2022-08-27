@@ -9,8 +9,12 @@ mod pi_gpio;
 use pi_gpio::gpio_test;
 
 use crate::camera::take_picture;
+use bluetooth::rssi_by_inquiry;
 
-fn main() {
+#[tokio::main(flavor = "current_thread")]
+async fn main(){
     // take_picture("/dev/video2");
-    gpio_test().unwrap();
+    // gpio_test().unwrap();
+    println!("hello");
+    rssi_by_inquiry().await;
 }
