@@ -33,7 +33,9 @@ fn main() {
                 disable().unwrap();
             },
             'q' => break,
-            _ => {},
+            _ => {
+                println!("?");
+            },
         }
     }
 }

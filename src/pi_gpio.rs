@@ -55,8 +55,8 @@ pub fn right(steps: u64) -> Result<()> {
     };
 
     for i in 0..steps {
-        motor_action(LOW, LOW, GAP)?;
         motor_action(HIGH, LOW, DUR)?;
+        motor_action(LOW, LOW, GAP)?;
     }
 
     Ok(())
@@ -76,8 +76,8 @@ pub fn left(steps: u64) -> Result<()> {
     };
 
     for i in 0..steps {
-        motor_action(LOW, LOW, GAP)?;
         motor_action(LOW, HIGH, DUR)?;
+        motor_action(LOW, LOW, GAP)?;
     }
 
     Ok(())
@@ -89,7 +89,7 @@ pub fn disable() -> Result<()> {
     gpio23.set_direction(Direction::Out)?;
     gpio24.set_direction(Direction::Out)?;
     println!("zeroing");
-    gpio23.set_value(1)?;
-    gpio24.set_value(1)?;
+    gpio23.set_value(LOW)?;
+    gpio24.set_value(LOW)?;
     Ok(())
 }
