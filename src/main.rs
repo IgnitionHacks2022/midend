@@ -25,20 +25,25 @@ use crate::camera::take_picture;
 
 #[tokio::main]
 async fn main() {
+    // intialize channels
     let (motion_tx, motion_rx) = mpsc::channel::<Vec<u8>>();
     let (gpio_tx, gpio_rx) = mpsc::channel::<Item>();
 
+    // motion detection thread
     let opencv_handle = thread::spawn(move || {
         if let Err(e) = motion::opencv_test(motion_tx, 2) {
             println!("{:?}", e);
         }
     });
+
+    // gpio thread
     let gpio_handle = thread::spawn(move || {
         for recv in gpio_rx {
             println!("motor for item {:?}", recv);
         }
     });
 
+    // main thread handles bluetooth discovery
     // might not need handles to each audio thread
     let mut audio_thread_pool: Vec<JoinHandle<()>> = Vec::new();
     for recv in motion_rx {
@@ -54,7 +59,9 @@ async fn main() {
         }
         */
         let audio_handle = thread::spawn(move || {
-            play_audio().unwrap();
+            if let Err(e) = play_audio() {
+                println!("Error playing audio {:?}", e);
+            }
         });
         audio_thread_pool.push(audio_handle);
     }
