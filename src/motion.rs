@@ -100,8 +100,12 @@ fn capture_frame(cam: &mut VideoCapture) -> Result<Mat> {
 }
 
 /// Convert to grayscale
-fn grayscale(frame: &mut Mat) -> opencv::Result<()> {
-    imgproc::cvt_color(&frame.clone(), frame, imgproc::COLOR_BGR2GRAY, 0)
+fn grayscale(frame: &mut Mat) -> Result<()> {
+    if frame.size()?.width <= 0 {
+        return Err(anyhow!("frame size assertion failed"));
+    }
+    imgproc::cvt_color(&frame.clone(), frame, imgproc::COLOR_BGR2GRAY, 0);
+    Ok(())
 }
 
 /// Apply gaussian blur effect

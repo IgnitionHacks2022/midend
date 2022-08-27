@@ -35,7 +35,7 @@ pub async fn rssi_by_inquiry() -> Result<String> {
         "Discovering devices using Bluetooth adapater {}\n",
         adapter.name()
     );
-    adapter.set_powered(true).await.unwrap();
+    adapter.set_powered(true).await?;
     println!("powered on");
 
     let device_events = adapter.discover_devices().await?;
@@ -43,7 +43,7 @@ pub async fn rssi_by_inquiry() -> Result<String> {
     println!("Scanning for bluetooth addresses");
     thread::sleep(Duration::from_secs(10));
 
-    let mut addrs = adapter.device_addresses().await.unwrap();
+    let mut addrs = adapter.device_addresses().await?;
     let mut named_addrs: Vec<(String, i16)> = Vec::new();
 
     for addr in addrs.iter() {
@@ -51,7 +51,6 @@ pub async fn rssi_by_inquiry() -> Result<String> {
         match device.name().await? {
             Some(x) => {
                 println!("{}", x.clone());
-                println!("{}", device.rssi().await?.unwrap());
                 named_addrs.push((x, device.rssi().await?.unwrap()));
             },
             None => (),
