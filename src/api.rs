@@ -17,7 +17,7 @@ pub async fn classify(user_id: String, image: Vec<u8>) -> Result<ClassifyRespons
         .await?;
 
     if !resp.status().is_success() {
-        anyhow!("errored with status {}", resp.status());
+        return Err(anyhow!("errored with status {}", resp.status()));
     }
 
     let resp_json = resp.json::<ClassifyResponse>().await?;
