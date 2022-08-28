@@ -3,6 +3,7 @@ use std::{collections::HashSet, env, thread, time::Duration};
 use anyhow::{anyhow, Result};
 use bluer::{Adapter, AdapterEvent, Address, Device, DeviceEvent};
 use futures::{pin_mut, stream::SelectAll, StreamExt};
+use log::info;
 
 async fn query_device(adapter: &Adapter, addr: Address) -> Result<()> {
     let device = adapter.device(addr)?;
@@ -31,26 +32,24 @@ async fn query_device(adapter: &Adapter, addr: Address) -> Result<()> {
 pub async fn rssi_by_inquiry() -> Result<String> {
     let session = bluer::Session::new().await?;
     let adapter = session.default_adapter().await?;
-    println!(
-        "Discovering devices using Bluetooth adapater {}\n",
+    info!(
+        "Discovering devices using Bluetooth adapater {}...\n",
         adapter.name()
     );
     adapter.set_powered(true).await?;
-    println!("powered on");
 
     let device_events = adapter.discover_devices().await?;
-
-    println!("Scanning for bluetooth addresses");
-    thread::sleep(Duration::from_secs(5));
+    thread::sleep(Duration::from_secs(3));
 
     let mut addrs = adapter.device_addresses().await?;
     let mut named_addrs: Vec<(String, i16)> = Vec::new();
 
+    info!("Discovered devices:");
     for addr in addrs.iter() {
         let device = adapter.device(addr.clone())?;
         match device.name().await? {
             Some(x) => {
-                println!("{}", x.clone());
+                info!("- {}", x.clone());
                 let rssi = device.rssi().await?;
                 if let Some(rssi) = rssi {
                     named_addrs.push((x, rssi));

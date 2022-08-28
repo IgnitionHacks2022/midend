@@ -2,13 +2,13 @@
 default: server-debug
 
 server-debug:
-    cargo run --bin server -- 2 true
+    RUST_LOG=info cargo run --bin server -- 2 true
 
 server:
-    cargo run --bin server -- 0 false
+    RUST_LOG=info cargo run --bin server -- 0 false
 
 gpio-debug:
-    cargo run --bin gpio-debug
+    RUST_LOG=info cargo run --bin gpio-debug
 
 devsetup:
     cp dev/hooks/* .git/hooks

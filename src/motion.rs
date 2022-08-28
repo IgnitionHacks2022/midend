@@ -1,6 +1,7 @@
 use std::{sync::mpsc::Sender, thread, time::Duration};
 
 use anyhow::{anyhow, Result};
+use log::error;
 use opencv::{
     core::{
         absdiff, Param_UNSIGNED_INT, Point, Rect, Scalar, Size, VecN, Vector, BORDER_CONSTANT,
@@ -19,8 +20,12 @@ use opencv::{
 
 use crate::audio::play_audio_file;
 
-const DELAY: u64 = 2000;
+const DELAY: u64 = 1000;
 
+/// Motion detection using opencv
+///
+/// Sends message to given channel once motion is detected
+/// Option to display debug camera output
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
 pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result<()> {
     if debug {
@@ -70,15 +75,15 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
         // take picture if motion was detected
         if !contours.is_empty() {
             if sent == false {
+                // delay before sending image
+                thread::sleep(Duration::from_millis(DELAY));
+
                 // send a ding sound
                 let _audio_handle = thread::spawn(move || {
                     if let Err(e) = play_audio_file("./assets/ding_1.wav") {
-                        println!("[AUDIO ERROR] {:?}", e);
+                        error!("[AUDIO ERROR] {:?}", e);
                     }
                 });
-
-                // delay before sending image
-                thread::sleep(Duration::from_millis(DELAY));
 
                 let motion_frame = capture_frame(&mut cam)?;
                 let mut buf = Vector::default();

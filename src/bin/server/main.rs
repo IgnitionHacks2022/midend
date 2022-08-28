@@ -3,10 +3,13 @@ use std::{env, sync::mpsc, thread};
 use garbagio_midend::{
     api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
 };
+use log::error;
 use pino_utils::ok_or_continue_msg;
 
 #[tokio::main]
 async fn main() {
+    env_logger::builder().format_timestamp(None).init();
+
     // read args
     let args = env::args().collect::<Vec<_>>();
     let video_index = args.get(1).and_then(|x| x.parse::<i32>().ok()).unwrap_or(0);
@@ -22,7 +25,7 @@ async fn main() {
     // motion detection thread
     let opencv_handle = thread::spawn(move || {
         if let Err(e) = motion::motion_detection(motion_tx, video_index, video_debug) {
-            println!("[OPENCV ERROR] {:?}", e);
+            error!("[OPENCV ERROR] {:?}", e);
         }
     });
 
@@ -36,7 +39,7 @@ async fn main() {
                 Item::Red => 8,
             };
             if let Err(e) = pi_gpio::rotate(steps) {
-                println!("[GPIO ERROR] {:?}", e);
+                error!("[GPIO ERROR] {:?}", e);
             }
         }
     });
@@ -46,12 +49,12 @@ async fn main() {
         let device_name = match rssi_by_inquiry().await {
             Ok(device_name) => device_name,
             Err(e) => {
-                println!("[BLUETOOTH ERROR] {:?}", e);
+                error!("[BLUETOOTH ERROR] {:?}", e);
                 String::from("None")
             },
         };
         let resp = ok_or_continue_msg!(api::classify(device_name, recv).await, |e| {
-            println!("[API ERROR] {:?}", e);
+            error!("[API ERROR] {:?}", e);
         });
 
         let item_type = Item::try_from(resp.item_type).unwrap_or(Item::Garbage);
@@ -60,7 +63,7 @@ async fn main() {
         let _audio_handle = thread::spawn(move || {
             let decoded = base64::decode(resp.audio).unwrap();
             if let Err(e) = play_audio(decoded) {
-                println!("[AUDIO ERROR] {:?}", e);
+                error!("[AUDIO ERROR] {:?}", e);
             }
         });
     }

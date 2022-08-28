@@ -6,9 +6,8 @@ use std::{
 use anyhow::Result;
 use rodio::{source::Source, Decoder, OutputStream, Sink};
 
+/// Play audio from buffer
 pub fn play_audio(audio: Vec<u8>) -> Result<()> {
-    println!("playing audio");
-
     let (_stream, handle) = OutputStream::try_default()?;
     let sink = Sink::try_new(&handle)?;
 
@@ -19,6 +18,7 @@ pub fn play_audio(audio: Vec<u8>) -> Result<()> {
     Ok(())
 }
 
+/// Play audio file from path
 pub fn play_audio_file(filepath: &str) -> Result<()> {
     let (_stream, handle) = OutputStream::try_default()?;
     let sink = Sink::try_new(&handle)?;
