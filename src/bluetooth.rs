@@ -22,7 +22,7 @@ pub async fn rssi_by_inquiry() -> Result<Vec<String>> {
 
     info!("Discovered devices:");
     for addr in addrs.iter() {
-        let device = adapter.device(addr.clone())?;
+        let device = adapter.device(*addr)?;
         match device.name().await? {
             Some(x) => {
                 info!("- {}", x.clone());

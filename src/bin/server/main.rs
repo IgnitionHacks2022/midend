@@ -57,8 +57,7 @@ async fn main() {
             error!("[API ERROR] {:?}", e);
         });
 
-        let item_type = Item::try_from(resp.item_type).unwrap_or(Item::Garbage);
-        gpio_tx.send(item_type).unwrap();
+        gpio_tx.send(resp.item_type).unwrap();
 
         let _audio_handle = thread::spawn(move || {
             let decoded = base64::decode(resp.audio).unwrap();

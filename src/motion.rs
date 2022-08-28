@@ -74,7 +74,7 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
 
         // take picture if motion was detected
         if !contours.is_empty() {
-            if sent == false {
+            if !sent {
                 // delay before sending image
                 thread::sleep(Duration::from_millis(DELAY));
 

@@ -2,6 +2,7 @@ use std::io::{stdin, stdout, Write};
 
 use garbagio_midend::pi_gpio::{disable, left, right};
 
+#[allow(clippy::unwrap_used)]
 fn main() {
     loop {
         // get user input
@@ -15,15 +16,15 @@ fn main() {
             continue;
         }
 
-        match input.chars().nth(0).unwrap() {
+        match input.chars().next().unwrap() {
             'l' => {
-                let (_, steps) = input.split_once(" ").unwrap_or(("", "1"));
+                let (_, steps) = input.split_once(' ').unwrap_or(("", "1"));
                 let steps = steps.parse::<u64>().unwrap_or(1);
                 println!("stepping left {} steps...", steps);
                 left(steps).unwrap();
             },
             'r' => {
-                let (_, steps) = input.split_once(" ").unwrap_or(("", "1"));
+                let (_, steps) = input.split_once(' ').unwrap_or(("", "1"));
                 let steps = steps.parse::<u64>().unwrap_or(1);
                 println!("stepping right {} steps...", steps);
                 right(steps).unwrap();
