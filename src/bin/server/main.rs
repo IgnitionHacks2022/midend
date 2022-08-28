@@ -1,6 +1,6 @@
 use std::{env, sync::mpsc, thread};
 
-use garbagio_midend::{
+use indabin_midend::{
     api,
     audio::{play_audio, play_audio_file},
     bluetooth::rssi_by_inquiry,

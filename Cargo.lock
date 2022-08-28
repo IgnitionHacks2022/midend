@@ -505,28 +505,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "garbagio_midend"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "base64",
- "bluer",
- "env_logger",
- "futures",
- "log",
- "opencv",
- "pino_utils",
- "rand",
- "reqwest",
- "rodio",
- "serde",
- "serde_json",
- "sysfs_gpio",
- "thiserror",
- "tokio",
-]
-
-[[package]]
 name = "getrandom"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -687,6 +665,28 @@ dependencies = [
  "matches",
  "unicode-bidi",
  "unicode-normalization",
+]
+
+[[package]]
+name = "indabin_midend"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64",
+ "bluer",
+ "env_logger",
+ "futures",
+ "log",
+ "opencv",
+ "pino_utils",
+ "rand",
+ "reqwest",
+ "rodio",
+ "serde",
+ "serde_json",
+ "sysfs_gpio",
+ "thiserror",
+ "tokio",
 ]
 
 [[package]]
