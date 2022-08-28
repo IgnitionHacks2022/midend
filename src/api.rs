@@ -10,9 +10,9 @@ pub async fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse>
     let encoded: String = base64::encode(image);
 
     let resp = Client::new()
-        .post(format!("{}/classify/{}", API_URL, user_id))
+        .post(format!("{}/classify", API_URL))
         .header("Content-Type", "application/json")
-        .body(json!({ "contents": encoded }).to_string())
+        .body(json!({ "contents": encoded, "bluetoothID": user_id }).to_string())
         .send()
         .await?;
 

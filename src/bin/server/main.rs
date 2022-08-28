@@ -32,20 +32,20 @@ async fn main() {
                 Item::Blue => 5,
                 Item::Red => 7,
             };
-            pi_gpio::rotate(steps);
+            pi_gpio::rotate(steps).unwrap();
         }
     });
 
     // main thread handles bluetooth discovery
-    // might not need handles to each audio thread
-    let mut audio_thread_pool: Vec<JoinHandle<()>> = Vec::new();
     for recv in motion_rx {
-        /*
-        let device_name = ok_or_continue_msg!(rssi_by_inquiry().await, |e| {
-            println!("{:?}", e);
-        });
-        */
-        let resp = ok_or_continue_msg!(api::classify("test", recv).await, |e| {
+        let device_name = match rssi_by_inquiry().await {
+            Ok(device_name) => device_name,
+            Err(e) => {
+                println!("{:?}", e);
+                String::from("None")
+            },
+        };
+        let resp = ok_or_continue_msg!(api::classify(&device_name, recv).await, |e| {
             println!("classify error {:?}", e);
         });
 
