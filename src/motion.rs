@@ -18,7 +18,7 @@ use opencv::{
     videoio::VideoCapture,
 };
 
-use crate::audio::play_audio_file;
+use crate::{audio::play_audio_file, pi_gpio::flash};
 
 const DELAY: u64 = 1000;
 const COOLDOWN: u64 = 3000;
@@ -84,6 +84,11 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
                     if let Err(e) = play_audio_file("./assets/ding_1.wav") {
                         error!("[AUDIO ERROR] {:?}", e);
                     }
+                });
+
+                // flash the led
+                let _led_handle = thread::spawn(move || {
+                    flash(20).unwrap();
                 });
 
                 let motion_frame = capture_frame(&mut cam)?;
