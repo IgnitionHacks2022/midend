@@ -3,7 +3,7 @@ use std::{env, sync::mpsc, thread};
 use garbagio_midend::{
     api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
 };
-use log::error;
+use log::{debug, error};
 use pino_utils::ok_or_continue_msg;
 
 #[tokio::main]
@@ -53,6 +53,7 @@ async fn main() {
                 Vec::new()
             },
         };
+        debug!("devices {:?}", devices);
         let resp = ok_or_continue_msg!(api::classify(devices, recv).await, |e| {
             error!("[API ERROR] {:?}", e);
         });
