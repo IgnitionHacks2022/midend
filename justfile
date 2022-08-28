@@ -10,6 +10,9 @@ server:
 gpio-debug:
     RUST_LOG=info,debug cargo run --bin gpio-debug
 
+server-rpi:
+    cargo build --target armv7-unknown-linux-gnueabihf --release
+
 devsetup:
     cp dev/hooks/* .git/hooks
 

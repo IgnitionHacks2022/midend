@@ -28,11 +28,24 @@ Next install some git hooks:
 $ just devsetup
 ```
 
-Ensure that you have the `opencv` headers and `clang` installed on your system.
-To run
+### CROSS COMPILATION (WIP)
+
+to be able to compile to the raspberry pi (4), ensure that you have the correct
+rust toolchain installed:
 ```
-$ just
+$ rustup target add armv7-unknown-linux-gnueabihf
 ```
+
+to be able to compile to arm from an x86 machine, we need to install a
+cross-compile toolchain (this
+[blog](https://shaneutt.com/blog/rust-x86-arm-raspberry-pi-4/) is a pretty nice
+guide). on arch based distros this can be done by (adapt based on your system):
+```
+$ yay -S arm-linux-gnueabihf-gcc
+```
+
+Ensure that you have the `opencv` headers, `libasound2` and `clang` installed
+on your system.
 
 ## HARDWARE SETUP
 
