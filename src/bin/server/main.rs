@@ -5,7 +5,8 @@ use std::{
 
 use anyhow::Result;
 use garbagio_midend::{
-    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion, pi_gpio
+    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion,
+    pi_gpio,
 };
 use pino_utils::ok_or_continue_msg;
 

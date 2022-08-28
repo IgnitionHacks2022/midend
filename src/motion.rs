@@ -30,7 +30,6 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
     // flag to limit how often a motion event is sent
     let mut sent = false;
     loop {
-
         // limit thread speed
         thread::sleep(Duration::from_millis(50));
 
