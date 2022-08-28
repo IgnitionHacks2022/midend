@@ -12,6 +12,7 @@ const GAP: u64 = 400;
 const LARGE_GAP: u64 = 500;
 const WAIT: u64 = 1500;
 
+/// Rotate pin a given number of steps counter-clockwise, then the same number of steps clockwise
 pub fn rotate(steps: u64) -> Result<()> {
     let gpio23 = Pin::new(23);
     let gpio24 = Pin::new(24);
@@ -40,6 +41,7 @@ pub fn rotate(steps: u64) -> Result<()> {
     Ok(())
 }
 
+/// Rotate a number of steps counter-clockwise
 pub fn right(steps: u64) -> Result<()> {
     let gpio23 = Pin::new(23);
     let gpio24 = Pin::new(24);
@@ -61,6 +63,7 @@ pub fn right(steps: u64) -> Result<()> {
     Ok(())
 }
 
+/// Rotate a number of steps clockwise
 pub fn left(steps: u64) -> Result<()> {
     let gpio23 = Pin::new(23);
     let gpio24 = Pin::new(24);
@@ -82,6 +85,7 @@ pub fn left(steps: u64) -> Result<()> {
     Ok(())
 }
 
+/// Force all pins to low
 pub fn disable() -> Result<()> {
     let gpio23 = Pin::new(23);
     let gpio24 = Pin::new(24);
