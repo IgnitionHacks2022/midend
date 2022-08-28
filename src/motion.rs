@@ -79,18 +79,6 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
                 // delay before sending image
                 thread::sleep(Duration::from_millis(DELAY));
 
-                // send a ding sound
-                let _audio_handle = thread::spawn(move || {
-                    if let Err(e) = play_audio_file("./assets/ding_1.wav") {
-                        error!("[AUDIO ERROR] {:?}", e);
-                    }
-                });
-
-                // flash the led
-                let _led_handle = thread::spawn(move || {
-                    flash(20).unwrap();
-                });
-
                 let motion_frame = capture_frame(&mut cam)?;
                 let mut buf = Vector::default();
                 imgcodecs::imencode(".png", &motion_frame, &mut buf, &Vector::default())?;
