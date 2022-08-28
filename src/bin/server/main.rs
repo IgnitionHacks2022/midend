@@ -40,8 +40,8 @@ async fn main() {
             // convert item to a duration
             let res = match recv {
                 Item::Garbage => Ok(()),
-                Item::Blue => pi_gpio::rotate(4, false),
-                Item::Red => pi_gpio::rotate(4, true),
+                Item::Blue => pi_gpio::rotate(4, true),
+                Item::Red => pi_gpio::rotate(4, false),
             };
             if let Err(e) = res {
                 error!("[GPIO ERROR] {:?}", e);
