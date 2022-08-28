@@ -46,14 +46,14 @@ async fn main() {
 
     // main thread handles bluetooth discovery
     for recv in motion_rx {
-        let device_name = match rssi_by_inquiry().await {
+        let devices = match rssi_by_inquiry().await {
             Ok(device_name) => device_name,
             Err(e) => {
                 error!("[BLUETOOTH ERROR] {:?}", e);
-                String::from("None")
+                Vec::new()
             },
         };
-        let resp = ok_or_continue_msg!(api::classify(device_name, recv).await, |e| {
+        let resp = ok_or_continue_msg!(api::classify(devices, recv).await, |e| {
             error!("[API ERROR] {:?}", e);
         });
 

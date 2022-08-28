@@ -32,6 +32,6 @@ pub struct ClassifyResponse {
 #[derive(Serialize)]
 pub struct ClassifyRequest {
     pub contents: String,
-    #[serde(rename = "bluetoothID")]
-    pub bluetooth_id: String,
+    #[serde(rename = "bluetoothIDs")]
+    pub bluetooth_ids: Vec<String>,
 }
