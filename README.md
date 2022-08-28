@@ -1,12 +1,12 @@
 <div align="center">
 
-# garbagio_midend
+# indabin_midend
 
-raspberry pi controller software for the garbagio hardware
+raspberry pi controller software for the indabin hardware
 
 </div>
 
-controller program for **garbagio** designed to be ran on a raspberry pi.
+controller program for **indabin** designed to be ran on a raspberry pi.
 handles bluetooth proximity, image capture of the waste as well as control of
 the motor.
 

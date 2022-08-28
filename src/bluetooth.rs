@@ -15,7 +15,7 @@ pub async fn rssi_by_inquiry() -> Result<Vec<String>> {
     adapter.set_powered(true).await?;
 
     let device_events = adapter.discover_devices().await?;
-    thread::sleep(Duration::from_secs(3));
+    thread::sleep(Duration::from_secs(5));
 
     let mut addrs = adapter.device_addresses().await?;
     let mut named_addrs: Vec<(String, i16)> = Vec::new();

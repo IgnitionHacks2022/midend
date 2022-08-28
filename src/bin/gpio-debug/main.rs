@@ -1,6 +1,6 @@
 use std::io::{stdin, stdout, Write};
 
-use garbagio_midend::pi_gpio::{disable, left, right};
+use indabin_midend::pi_gpio::{disable, left, right};
 
 #[allow(clippy::unwrap_used)]
 fn main() {

@@ -1,6 +1,6 @@
 use std::{env, sync::mpsc, thread};
 
-use garbagio_midend::{
+use indabin_midend::{
     api,
     audio::{play_audio, play_audio_file},
     bluetooth::rssi_by_inquiry,
@@ -38,12 +38,12 @@ async fn main() {
     let _gpio_handle = thread::spawn(move || {
         for recv in gpio_rx {
             // convert item to a duration
-            let steps = match recv {
-                Item::Garbage => 0,
-                Item::Blue => 4,
-                Item::Red => 8,
+            let res = match recv {
+                Item::Garbage => Ok(()),
+                Item::Blue => pi_gpio::rotate(4, true),
+                Item::Red => pi_gpio::rotate(4, false),
             };
-            if let Err(e) = pi_gpio::rotate(steps) {
+            if let Err(e) = res {
                 error!("[GPIO ERROR] {:?}", e);
             }
         }

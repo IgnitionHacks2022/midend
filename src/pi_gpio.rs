@@ -10,7 +10,7 @@ const HIGH: u8 = 0;
 const DUR: u64 = 200;
 const GAP: u64 = 400;
 const LARGE_GAP: u64 = 500;
-const WAIT: u64 = 1500;
+const WAIT: u64 = 2500;
 
 /// Flash the LED for a set number of flashes
 pub fn flash(flashes: u64) -> Result<()> {
@@ -29,7 +29,7 @@ pub fn flash(flashes: u64) -> Result<()> {
 }
 
 /// Rotate pin a given number of steps counter-clockwise, then the same number of steps clockwise
-pub fn rotate(steps: u64) -> Result<()> {
+pub fn rotate(steps: u64, reverse: bool) -> Result<()> {
     let gpio23 = Pin::new(23);
     let gpio24 = Pin::new(24);
     gpio23.set_direction(Direction::Out)?;
@@ -43,14 +43,22 @@ pub fn rotate(steps: u64) -> Result<()> {
     };
 
     for i in 0..steps {
-        motor_action(HIGH, LOW, DUR)?;
+        if reverse {
+            motor_action(LOW, HIGH, DUR)?;
+        } else {
+            motor_action(HIGH, LOW, DUR)?;
+        }
         motor_action(LOW, LOW, GAP)?;
     }
 
     motor_action(LOW, LOW, WAIT)?;
 
     for i in 0..steps {
-        motor_action(LOW, HIGH, DUR)?;
+        if reverse {
+            motor_action(HIGH, LOW, DUR)?;
+        } else {
+            motor_action(LOW, HIGH, DUR)?;
+        }
         motor_action(LOW, LOW, GAP)?;
     }
 
