@@ -1,8 +1,11 @@
 
-default: server
+default: server-debug
+
+server-debug:
+    cargo run --bin server -- 2 true
 
 server:
-    cargo run --bin server
+    cargo run --bin server -- 0 false
 
 gpio-debug:
     cargo run --bin gpio-debug

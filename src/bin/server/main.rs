@@ -1,4 +1,4 @@
-use std::{sync::mpsc, thread};
+use std::{env, sync::mpsc, thread};
 
 use garbagio_midend::{
     api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
@@ -7,13 +7,21 @@ use pino_utils::ok_or_continue_msg;
 
 #[tokio::main]
 async fn main() {
+    // read args
+    let args = env::args().collect::<Vec<_>>();
+    let video_index = args.get(1).and_then(|x| x.parse::<i32>().ok()).unwrap_or(0);
+    let video_debug = args
+        .get(2)
+        .and_then(|x| x.parse::<bool>().ok())
+        .unwrap_or(false);
+
     // intialize channels
     let (motion_tx, motion_rx) = mpsc::channel::<Vec<u8>>();
     let (gpio_tx, gpio_rx) = mpsc::channel::<Item>();
 
     // motion detection thread
     let opencv_handle = thread::spawn(move || {
-        if let Err(e) = motion::opencv_test(motion_tx, 0) {
+        if let Err(e) = motion::motion_detection(motion_tx, video_index, video_debug) {
             println!("[OPENCV ERROR] {:?}", e);
         }
     });
