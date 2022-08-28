@@ -6,7 +6,7 @@ use crate::models::{ClassifyResponse, Item};
 
 pub const API_URL: &str = "https://ignition.zhehaizhang.com";
 
-pub async fn classify(user_id: &str, image: Vec<u8>) -> Result<ClassifyResponse> {
+pub async fn classify(user_id: String, image: Vec<u8>) -> Result<ClassifyResponse> {
     let encoded: String = base64::encode(image);
 
     let resp = Client::new()

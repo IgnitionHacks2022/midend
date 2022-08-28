@@ -1,12 +1,7 @@
-use std::{
-    sync::mpsc,
-    thread::{self, JoinHandle},
-};
+use std::{sync::mpsc, thread};
 
-use anyhow::Result;
 use garbagio_midend::{
-    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion,
-    pi_gpio,
+    api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
 };
 use pino_utils::ok_or_continue_msg;
 
@@ -18,21 +13,23 @@ async fn main() {
 
     // motion detection thread
     let opencv_handle = thread::spawn(move || {
-        motion::opencv_test(motion_tx, 0).unwrap();
+        if let Err(e) = motion::opencv_test(motion_tx, 0) {
+            println!("[OPENCV ERROR] {:?}", e);
+        }
     });
 
     // gpio thread
-    let gpio_handle = thread::spawn(move || {
+    let _gpio_handle = thread::spawn(move || {
         for recv in gpio_rx {
-            println!("motor for item {:?}", recv);
-
             // convert item to a duration
             let steps = match recv {
                 Item::Garbage => 3,
                 Item::Blue => 5,
                 Item::Red => 7,
             };
-            pi_gpio::rotate(steps).unwrap();
+            if let Err(e) = pi_gpio::rotate(steps) {
+                println!("[GPIO ERROR] {:?}", e);
+            }
         }
     });
 
@@ -41,23 +38,21 @@ async fn main() {
         let device_name = match rssi_by_inquiry().await {
             Ok(device_name) => device_name,
             Err(e) => {
-                println!("{:?}", e);
+                println!("[BLUETOOTH ERROR] {:?}", e);
                 String::from("None")
             },
         };
-        let resp = ok_or_continue_msg!(api::classify(&device_name, recv).await, |e| {
-            println!("classify error {:?}", e);
+        let resp = ok_or_continue_msg!(api::classify(device_name, recv).await, |e| {
+            println!("[API ERROR] {:?}", e);
         });
 
-        let item_type = Item::try_from(resp.item_type).unwrap();
+        let item_type = Item::try_from(resp.item_type).unwrap_or(Item::Garbage);
+        gpio_tx.send(item_type).unwrap();
 
-        if gpio_tx.send(item_type).is_err() {
-            println!("Error sending to gpio thread");
-        }
-        let audio_handle = thread::spawn(move || {
+        let _audio_handle = thread::spawn(move || {
             let decoded = base64::decode(resp.audio).unwrap();
             if let Err(e) = play_audio(decoded) {
-                println!("Error playing audio {:?}", e);
+                println!("[AUDIO ERROR] {:?}", e);
             }
         });
     }

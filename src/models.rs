@@ -27,3 +27,11 @@ pub struct ClassifyResponse {
     pub item_type: String,
     pub audio: String,
 }
+
+// unused
+#[derive(Serialize)]
+pub struct ClassifyRequest {
+    pub contents: String,
+    #[serde(rename = "bluetoothID")]
+    pub bluetooth_id: String,
+}
