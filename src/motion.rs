@@ -21,7 +21,7 @@ const DELAY: u64 = 2000;
 
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
 pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
-    // highgui::named_window("highgui", highgui::WINDOW_FULLSCREEN)?;
+    highgui::named_window("highgui", highgui::WINDOW_FULLSCREEN)?;
 
     let mut cam = VideoCapture::new(device, videoio::CAP_ANY)?;
     let mut static_frame = Mat::default();
@@ -30,6 +30,10 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
     // flag to limit how often a motion event is sent
     let mut sent = false;
     loop {
+
+        // limit thread speed
+        thread::sleep(Duration::from_millis(50));
+
         i += 1;
 
         // preprocessing steps
@@ -78,7 +82,7 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
             sent = false;
         }
 
-        // highgui::imshow("highgui", &boxed)?;
+        highgui::imshow("highgui", &boxed)?;
 
         if highgui::wait_key(1)? == 113 {
             break;
