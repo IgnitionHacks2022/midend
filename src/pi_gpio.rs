@@ -10,7 +10,7 @@ const HIGH: u8 = 0;
 const DUR: u64 = 200;
 const GAP: u64 = 400;
 const LARGE_GAP: u64 = 500;
-const WAIT: u64 = 1500;
+const WAIT: u64 = 2500;
 
 /// Flash the LED for a set number of flashes
 pub fn flash(flashes: u64) -> Result<()> {
