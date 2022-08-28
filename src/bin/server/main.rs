@@ -1,7 +1,12 @@
 use std::{env, sync::mpsc, thread};
 
 use garbagio_midend::{
-    api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
+    api,
+    audio::{play_audio, play_audio_file},
+    bluetooth::rssi_by_inquiry,
+    models::Item,
+    motion,
+    pi_gpio::{self, flash},
 };
 use log::{debug, error};
 use pino_utils::ok_or_continue_msg;
@@ -46,6 +51,18 @@ async fn main() {
 
     // main thread handles bluetooth discovery
     for recv in motion_rx {
+        // send a ding sound
+        let _audio_handle = thread::spawn(move || {
+            if let Err(e) = play_audio_file("./assets/ding_1.wav") {
+                error!("[AUDIO ERROR] {:?}", e);
+            }
+        });
+
+        // flash the led
+        let _led_handle = thread::spawn(move || {
+            flash(20).unwrap();
+        });
+
         let devices = match rssi_by_inquiry().await {
             Ok(device_name) => device_name,
             Err(e) => {

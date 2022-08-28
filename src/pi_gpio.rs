@@ -12,6 +12,22 @@ const GAP: u64 = 400;
 const LARGE_GAP: u64 = 500;
 const WAIT: u64 = 1500;
 
+/// Flash the LED for a set number of flashes
+pub fn flash(flashes: u64) -> Result<()> {
+    const FLASH_PERIOD: u64 = 100;
+
+    let gpio25 = Pin::new(25);
+    gpio25.set_direction(Direction::Out)?;
+
+    for i in 0..flashes {
+        gpio25.set_value(LOW)?;
+        thread::sleep(Duration::from_millis(FLASH_PERIOD));
+        gpio25.set_value(HIGH)?;
+        thread::sleep(Duration::from_millis(FLASH_PERIOD));
+    }
+    Ok(())
+}
+
 /// Rotate pin a given number of steps counter-clockwise, then the same number of steps clockwise
 pub fn rotate(steps: u64) -> Result<()> {
     let gpio23 = Pin::new(23);
