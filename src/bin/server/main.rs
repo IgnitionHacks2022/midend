@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::Result;
 use garbagio_midend::{
-    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion,
+    api, audio::play_audio, bluetooth::rssi_by_inquiry, camera::take_picture, models::Item, motion, pi_gpio
 };
 use pino_utils::ok_or_continue_msg;
 
@@ -17,7 +17,7 @@ async fn main() {
 
     // motion detection thread
     let opencv_handle = thread::spawn(move || {
-        motion::opencv_test(motion_tx, 2).unwrap();
+        motion::opencv_test(motion_tx, 0).unwrap();
     });
 
     // gpio thread
@@ -26,12 +26,12 @@ async fn main() {
             println!("motor for item {:?}", recv);
 
             // convert item to a duration
-            // let duration = match recv {
-            //     Item::Garbage => 3,
-            //     Item::Blue => 5,
-            //     Item::Red => 7,
-            // };
-            // pi_gpio::rotate(duration);
+            let steps = match recv {
+                Item::Garbage => 3,
+                Item::Blue => 5,
+                Item::Red => 7,
+            };
+            pi_gpio::rotate(steps);
         }
     });
 
@@ -59,7 +59,6 @@ async fn main() {
                 println!("Error playing audio {:?}", e);
             }
         });
-        audio_thread_pool.push(audio_handle);
     }
 
     opencv_handle.join().unwrap();
