@@ -30,6 +30,9 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
     // flag to limit how often a motion event is sent
     let mut sent = false;
     loop {
+        // limit thread speed
+        thread::sleep(Duration::from_millis(50));
+
         i += 1;
 
         // preprocessing steps
@@ -79,7 +82,6 @@ pub fn opencv_test(tx: Sender<Vec<u8>>, device: i32) -> Result<()> {
         }
 
         highgui::imshow("highgui", &boxed)?;
-        // imgcodecs::imwrite("./frame.png", &diff, &Vector::default())?;
 
         if highgui::wait_key(1)? == 113 {
             break;

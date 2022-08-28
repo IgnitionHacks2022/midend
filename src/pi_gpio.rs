@@ -10,6 +10,7 @@ const HIGH: u8 = 0;
 const DUR: u64 = 200;
 const GAP: u64 = 400;
 const LARGE_GAP: u64 = 500;
+const WAIT: u64 = 1500;
 
 pub fn rotate(steps: u64) -> Result<()> {
     let gpio23 = Pin::new(23);
@@ -24,18 +25,16 @@ pub fn rotate(steps: u64) -> Result<()> {
         Ok(())
     };
 
-    loop {
-        for i in 0..steps {
-            motor_action(LOW, LOW, GAP)?;
-            motor_action(HIGH, LOW, DUR)?;
-        }
-        motor_action(LOW, LOW, LARGE_GAP)?;
+    for i in 0..steps {
+        motor_action(HIGH, LOW, DUR)?;
+        motor_action(LOW, LOW, GAP)?;
+    }
 
-        for i in 0..steps {
-            motor_action(LOW, LOW, GAP)?;
-            motor_action(LOW, HIGH, DUR)?;
-        }
-        motor_action(LOW, LOW, LARGE_GAP)?;
+    motor_action(LOW, LOW, WAIT)?;
+
+    for i in 0..steps {
+        motor_action(LOW, HIGH, DUR)?;
+        motor_action(LOW, LOW, GAP)?;
     }
 
     Ok(())

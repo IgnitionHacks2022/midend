@@ -1,6 +1,6 @@
 use std::{collections::HashSet, env, thread, time::Duration};
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use bluer::{Adapter, AdapterEvent, Address, Device, DeviceEvent};
 use futures::{pin_mut, stream::SelectAll, StreamExt};
 
@@ -41,7 +41,7 @@ pub async fn rssi_by_inquiry() -> Result<String> {
     let device_events = adapter.discover_devices().await?;
 
     println!("Scanning for bluetooth addresses");
-    thread::sleep(Duration::from_secs(10));
+    thread::sleep(Duration::from_secs(5));
 
     let mut addrs = adapter.device_addresses().await?;
     let mut named_addrs: Vec<(String, i16)> = Vec::new();
@@ -51,12 +51,18 @@ pub async fn rssi_by_inquiry() -> Result<String> {
         match device.name().await? {
             Some(x) => {
                 println!("{}", x.clone());
-                named_addrs.push((x, device.rssi().await?.unwrap()));
+                let rssi = device.rssi().await?;
+                if let Some(rssi) = rssi {
+                    named_addrs.push((x, rssi));
+                }
             },
             None => (),
         }
     }
     named_addrs.sort_by(|(n1, r1), (n2, r2)| r2.cmp(r1));
 
+    if named_addrs.is_empty() {
+        return Err(anyhow!("No devices found"));
+    }
     return Ok(named_addrs[0].0.clone());
 }
