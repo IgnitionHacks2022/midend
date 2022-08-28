@@ -31,9 +31,9 @@ async fn main() {
         for recv in gpio_rx {
             // convert item to a duration
             let steps = match recv {
-                Item::Garbage => 3,
-                Item::Blue => 5,
-                Item::Red => 7,
+                Item::Garbage => 0,
+                Item::Blue => 4,
+                Item::Red => 8,
             };
             if let Err(e) = pi_gpio::rotate(steps) {
                 println!("[GPIO ERROR] {:?}", e);
