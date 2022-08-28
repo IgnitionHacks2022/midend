@@ -17,6 +17,8 @@ use opencv::{
     videoio::VideoCapture,
 };
 
+use crate::audio::play_audio_file;
+
 const DELAY: u64 = 2000;
 
 // translated from https://www.geeksforgeeks.org/webcam-motion-detector-python/
@@ -68,6 +70,13 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
         // take picture if motion was detected
         if !contours.is_empty() {
             if sent == false {
+                // send a ding sound
+                let _audio_handle = thread::spawn(move || {
+                    if let Err(e) = play_audio_file("./assets/ding_1.wav") {
+                        println!("[AUDIO ERROR] {:?}", e);
+                    }
+                });
+
                 // delay before sending image
                 thread::sleep(Duration::from_millis(DELAY));
 
