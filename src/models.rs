@@ -2,6 +2,7 @@ use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "lowercase")]
 pub enum Item {
     Red,
     Blue,
@@ -24,7 +25,7 @@ impl TryFrom<String> for Item {
 #[derive(Deserialize, Debug)]
 pub struct ClassifyResponse {
     #[serde(rename = "type")]
-    pub item_type: String,
+    pub item_type: Item,
     pub audio: String,
 }
 
@@ -32,6 +33,6 @@ pub struct ClassifyResponse {
 #[derive(Serialize)]
 pub struct ClassifyRequest {
     pub contents: String,
-    #[serde(rename = "bluetoothID")]
-    pub bluetooth_id: String,
+    #[serde(rename = "bluetoothIDs")]
+    pub bluetooth_ids: Vec<String>,
 }

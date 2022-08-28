@@ -6,13 +6,13 @@ use crate::models::{ClassifyResponse, Item};
 
 pub const API_URL: &str = "https://ignition.zhehaizhang.com";
 
-pub async fn classify(user_id: String, image: Vec<u8>) -> Result<ClassifyResponse> {
+pub async fn classify(user_id: Vec<String>, image: Vec<u8>) -> Result<ClassifyResponse> {
     let encoded: String = base64::encode(image);
 
     let resp = Client::new()
         .post(format!("{}/classify", API_URL))
         .header("Content-Type", "application/json")
-        .body(json!({ "contents": encoded, "bluetoothID": user_id }).to_string())
+        .body(json!({ "contents": encoded, "bluetoothIDs": user_id }).to_string())
         .send()
         .await?;
 

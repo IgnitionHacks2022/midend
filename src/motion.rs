@@ -21,6 +21,7 @@ use opencv::{
 use crate::audio::play_audio_file;
 
 const DELAY: u64 = 1000;
+const COOLDOWN: u64 = 3000;
 
 /// Motion detection using opencv
 ///
@@ -74,7 +75,7 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
 
         // take picture if motion was detected
         if !contours.is_empty() {
-            if sent == false {
+            if !sent {
                 // delay before sending image
                 thread::sleep(Duration::from_millis(DELAY));
 
@@ -92,6 +93,8 @@ pub fn motion_detection(tx: Sender<Vec<u8>>, device: i32, debug: bool) -> Result
 
                 tx.send(buf)?;
                 sent = true;
+
+                thread::sleep(Duration::from_millis(COOLDOWN));
             }
         } else {
             sent = false;

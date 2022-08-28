@@ -3,7 +3,7 @@ use std::{env, sync::mpsc, thread};
 use garbagio_midend::{
     api, audio::play_audio, bluetooth::rssi_by_inquiry, models::Item, motion, pi_gpio,
 };
-use log::error;
+use log::{debug, error};
 use pino_utils::ok_or_continue_msg;
 
 #[tokio::main]
@@ -46,19 +46,19 @@ async fn main() {
 
     // main thread handles bluetooth discovery
     for recv in motion_rx {
-        let device_name = match rssi_by_inquiry().await {
+        let devices = match rssi_by_inquiry().await {
             Ok(device_name) => device_name,
             Err(e) => {
                 error!("[BLUETOOTH ERROR] {:?}", e);
-                String::from("None")
+                Vec::new()
             },
         };
-        let resp = ok_or_continue_msg!(api::classify(device_name, recv).await, |e| {
+        debug!("devices {:?}", devices);
+        let resp = ok_or_continue_msg!(api::classify(devices, recv).await, |e| {
             error!("[API ERROR] {:?}", e);
         });
 
-        let item_type = Item::try_from(resp.item_type).unwrap_or(Item::Garbage);
-        gpio_tx.send(item_type).unwrap();
+        gpio_tx.send(resp.item_type).unwrap();
 
         let _audio_handle = thread::spawn(move || {
             let decoded = base64::decode(resp.audio).unwrap();
